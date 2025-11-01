@@ -1,0 +1,90 @@
+Objetivos
+●
+●
+Aplicación de los conocimientos adquiridos durante el curso en un trabajo
+práctico.
+Integración del alumno a un grupo de trabajo, en el entendimiento que el trabajo
+en grupo propicia el análisis, la discusión y la aplicación de lo aprendido en el
+curso.
+Características del trabajo obligatorio
+●
+●
+●
+●
+●
+●
+●
+Los grupos deben tener un máximo de 4 integrantes.
+La fecha de entrega será el día viernes 28/11/2025.
+El trabajo obligatorio tendrá un valor de 100 puntos y representa el 25% de la
+calificación final del curso. El puntaje obtenido en el obligatorio es grupal.
+Se debe obtener un mínimo de 50 puntos para aspirar a la aprobación del curso.
+Se debe subir un archivo comprimido conteniendo el proyecto al link de entrega
+en la página del curso.
+Se debe incluir en la entrega un documento con la información de los integrantes
+del equipo, objetivos del proyecto, descripción de cómo lo resolvieron,
+problemas encontrados y conclusión.
+El trabajo consiste en la implementación de la solución al problema que se
+plantea a continuación. Todos los integrantes del grupo deben participar.
+Planteo del problema
+Realizar una aplicación nativa para el sistema operativo Android utilizando Android
+Studio, con el propósito de organizar y gestionar la colección de recetas del usuario.
+Los requerimientos para esta aplicación son los siguientes:
+●
+Realizar el registro y autenticación de los usuarios por medio de un servicio (ej,
+Firebase).
+●
+Realizar búsquedas de recetas desde un repositorio externo con el fin de ver las
+opciones disponibles y poder agregarlas a la colección del usuario. Se
+recomienda el uso de un webservice de acceso gratuito (ej, themealdb). También
+se deberán poder agregar recetas propias.
+●
+Listar las recetas que se encuentran en la colección del usuario. Para esto se
+recomienda utilizar recyclerview.
+●
+Poder gestionar las recetas de la colección, con sus respectivas pantallas. Se
+debe poder ver la información básica (ej, Nombre, categoría, instrucciones e
+ingredientes) y además poder agregar notas personalizadas. También se debe
+poder eliminar una receta de la colección.
+●
+Utilizando sharedpreferences, cuando el usuario ingrese a la aplicación, mostrar
+cuál fue la última receta ingresada o modificada.
+●
+Incluir visualizaciones de las comidas.
+Consideraciones Generales
+●
+●
+●
+●
+●
+●
+●
+●
+El mecanismo de autenticación recomendado es Firebase Authentication.
+Para los datos de las recetas que sea necesario almacenar en el dispositivo se
+recomienda el uso de una BD SQLite.
+Se tomará en cuenta el diseño de la interfaz de acuerdo a la letra del problema.
+Se deberá validar el formato de los datos de entrada y datos vacíos.
+Las búsquedas en el repositorio se podrán realizar por nombre, categoría o área.
+Las categorías y áreas se deberán desplegar utilizando un spinner. Ejemplo de
+categorías: Entrada, postre.
+Se recomienda que toda descarga de información se implemente en un hilo
+trabajador.
+Se recomienda que los textos que se muestran en la aplicación no sean
+hardcodeados. Se puede hacer uso del recurso string.xml.
+Funcionalidades extras (opcionales)
+●
+●
+Implementar la funcionalidad de planificar el menú de la semana. Que permita
+agregar recetas para cada día.
+Utilizar una base de datos en la nube para permitir sincronizar la colección entre
+distintos dispositivos.
+Criterios de evaluación
+●
+●
+●
+●
+Completitud de las funcionalidades y pantallas solicitadas.
+Validación de datos de entrada.
+Que la app no contenga errores. Que no se caiga al ejecutarla.
+Implementación de funcionalidades e
