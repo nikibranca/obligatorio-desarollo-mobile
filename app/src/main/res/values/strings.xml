@@ -1,12 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">obligatorio</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <!-- ==================== NOMBRE DE LA APP ==================== -->
+    <string name="app_name">Mis Recetas</string>
+    
+    <!-- ==================== AUTENTICACIÓN ==================== -->
+    <string name="login_title">Iniciar Sesión</string>
+    <string name="register_title">Registrarse</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="confirm_password_hint">Confirmar contraseña</string>
+    <string name="login_button">Iniciar Sesión</string>
+    <string name="register_button">Registrarse</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="go_to_register">¿No tienes cuenta? Regístrate</string>
+    <string name="go_to_login">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="logout">Cerrar Sesión</string>
+    
+    <!-- Strings adicionales para layouts automáticos -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="prompt_password">Contraseña</string>
+    <string name="action_sign_in">Iniciar Sesión</string>
+    <string name="action_sign_in_short">Entrar</string>
+    
+    <!-- ==================== NAVEGACIÓN ==================== -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_search">Buscar</string>
+    <string name="nav_profile">Perfil</string>
+    <string name="nav_favorites">Favoritas</string>
+    
+    <!-- ==================== PANTALLA PRINCIPAL ==================== -->
+    <string name="my_recipes">Mis Recetas</string>
+    <string name="no_recipes_message">No tienes recetas guardadas aún.\n¡Busca y agrega tus primeras recetas!</string>
+    <string name="last_recipe_added">Última receta: %s</string>
+    <string name="recipe_count">%d recetas en tu colección</string>
+    <string name="search_local_recipes">Buscar en mis recetas</string>
+    
+    <!-- ==================== BÚSQUEDA ==================== -->
+    <string name="search_recipes">Buscar Recetas</string>
+    <string name="search_hint">Nombre de la receta</string>
+    <string name="search_button">Buscar</string>
+    <string name="search_type">Tipo de búsqueda</string>
+    <string name="search_by_name">Por nombre</string>
+    <string name="search_by_category">Por categoría</string>
+    <string name="search_by_area">Por área</string>
+    <string name="select_category">Seleccionar categoría</string>
+    <string name="select_area">Seleccionar área</string>
+    <string name="random_recipe">Receta Aleatoria</string>
+    <string name="clear_search">Limpiar búsqueda</string>
+    <string name="no_results_found">No se encontraron recetas para: %s</string>
+    <string name="results_found">Se encontraron %d recetas</string>
+    
+    <!-- ==================== DETALLE DE RECETA ==================== -->
+    <string name="recipe_details">Detalles de la Receta</string>
+    <string name="recipe_name">Nombre</string>
+    <string name="recipe_category">Categoría</string>
+    <string name="recipe_area">Área</string>
+    <string name="recipe_instructions">Instrucciones</string>
+    <string name="recipe_ingredients">Ingredientes</string>
+    <string name="personal_notes">Notas Personales</string>
+    <string name="personal_notes_hint">Agrega tus notas personales aquí...</string>
+    <string name="save_notes">Guardar Notas</string>
+    <string name="add_to_collection">Agregar a mi Colección</string>
+    <string name="remove_from_collection">Eliminar de mi Colección</string>
+    <string name="share_recipe">Compartir Receta</string>
+    
+    <!-- ==================== ACCIONES ==================== -->
+    <string name="add">Agregar</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">Aceptar</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="back">Atrás</string>
+    <string name="next">Siguiente</string>
+    <string name="done">Listo</string>
+    <string name="retry">Reintentar</string>
+    <string name="refresh">Actualizar</string>
+    
+    <!-- ==================== MENSAJES DE CONFIRMACIÓN ==================== -->
+    <string name="delete_recipe_title">Eliminar Receta</string>
+    <string name="delete_recipe_message">¿Estás seguro de que quieres eliminar esta receta de tu colección?</string>
+    <string name="recipe_added_success">Receta \'%s\' agregada a tu colección</string>
+    <string name="recipe_deleted_success">Receta \'%s\' eliminada correctamente</string>
+    <string name="notes_updated_success">Notas actualizadas correctamente</string>
+    <string name="logout_confirmation">¿Estás seguro de que quieres cerrar sesión?</string>
+    
+    <!-- ==================== MENSAJES DE ERROR ==================== -->
+    <string name="error_generic">Ha ocurrido un error. Inténtalo de nuevo.</string>
+    <string name="error_network">Error de conexión. Verifica tu internet.</string>
+    <string name="error_server">Error del servidor. Inténtalo más tarde.</string>
+    <string name="error_authentication">Error de autenticación</string>
+    <string name="error_invalid_email">El formato del email no es válido</string>
+    <string name="error_weak_password">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="error_user_not_found">Usuario no encontrado</string>
+    <string name="error_wrong_password">Contraseña incorrecta</string>
+    <string name="error_email_already_in_use">Este email ya está registrado</string>
+    <string name="error_empty_field">Este campo no puede estar vacío</string>
+    <string name="error_passwords_dont_match">Las contraseñas no coinciden</string>
+    <string name="error_loading_recipes">Error cargando recetas</string>
+    <string name="error_loading_categories">Error cargando categorías</string>
+    <string name="error_loading_areas">Error cargando áreas</string>
+    
+    <!-- ==================== VALIDACIONES ==================== -->
+    <string name="validation_email_empty">El email no puede estar vacío</string>
+    <string name="validation_email_invalid">El formato del email no es válido</string>
+    <string name="validation_password_empty">La contraseña no puede estar vacía</string>
+    <string name="validation_password_short">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="validation_recipe_name_empty">El nombre de la receta no puede estar vacío</string>
+    <string name="validation_recipe_name_short">El nombre debe tener al menos 3 caracteres</string>
+    <string name="validation_instructions_empty">Las instrucciones no pueden estar vacías</string>
+    <string name="validation_ingredients_empty">Los ingredientes no pueden estar vacíos</string>
+    <string name="validation_category_empty">Debe seleccionar una categoría</string>
+    <string name="validation_area_empty">Debe seleccionar un área</string>
+    <string name="validation_search_empty">Ingrese un término de búsqueda</string>
+    <string name="validation_search_short">El término debe tener al menos 2 caracteres</string>
+    
+    <!-- ==================== ESTADOS DE CARGA ==================== -->
+    <string name="loading">Cargando...</string>
+    <string name="loading_recipes">Cargando recetas...</string>
+    <string name="loading_categories">Cargando categorías...</string>
+    <string name="loading_areas">Cargando áreas...</string>
+    <string name="searching">Buscando...</string>
+    <string name="saving">Guardando...</string>
+    <string name="deleting">Eliminando...</string>
+    <string name="authenticating">Autenticando...</string>
+    
+    <!-- ==================== RECETA PERSONALIZADA ==================== -->
+    <string name="create_recipe">Crear Receta</string>
+    <string name="edit_recipe">Editar Receta</string>
+    <string name="recipe_name_hint">Nombre de la receta</string>
+    <string name="recipe_instructions_hint">Instrucciones paso a paso</string>
+    <string name="recipe_ingredients_hint">Lista de ingredientes</string>
+    <string name="recipe_image_url_hint">URL de la imagen (opcional)</string>
+    <string name="personal_recipe">Receta Personal</string>
+    <string name="from_api">De TheMealDB</string>
+    
+    <!-- ==================== PERFIL DE USUARIO ==================== -->
+    <string name="user_profile">Perfil de Usuario</string>
+    <string name="user_email">Email: %s</string>
+    <string name="user_recipes_count">Recetas guardadas: %d</string>
+    <string name="user_personal_recipes_count">Recetas personales: %d</string>
+    <string name="change_password">Cambiar Contraseña</string>
+    <string name="delete_account">Eliminar Cuenta</string>
+    <string name="app_settings">Configuración</string>
+    
+    <!-- ==================== FUNCIONALIDADES EXTRAS ==================== -->
+    <string name="meal_planner">Planificador de Menú</string>
+    <string name="weekly_menu">Menú Semanal</string>
+    <string name="monday">Lunes</string>
+    <string name="tuesday">Martes</string>
+    <string name="wednesday">Miércoles</string>
+    <string name="thursday">Jueves</string>
+    <string name="friday">Viernes</string>
+    <string name="saturday">Sábado</string>
+    <string name="sunday">Domingo</string>
+    <string name="breakfast">Desayuno</string>
+    <string name="lunch">Almuerzo</string>
+    <string name="dinner">Cena</string>
+    <string name="snack">Merienda</string>
+    
+    <!-- ==================== COMPARTIR ==================== -->
+    <string name="share_recipe_text">¡Mira esta deliciosa receta: %s!</string>
+    <string name="share_via">Compartir vía</string>
+    
+    <!-- ==================== TIEMPO ==================== -->
+    <string name="time_just_now">Ahora mismo</string>
+    <string name="time_minutes_ago">hace %d minutos</string>
+    <string name="time_hours_ago">hace %d horas</string>
+    <string name="time_days_ago">hace %d días</string>
+    <string name="time_weeks_ago">hace %d semanas</string>
+    
+    <!-- ==================== CATEGORÍAS POR DEFECTO ==================== -->
+    <string name="category_beef">Carne</string>
+    <string name="category_chicken">Pollo</string>
+    <string name="category_dessert">Postre</string>
+    <string name="category_pasta">Pasta</string>
+    <string name="category_seafood">Mariscos</string>
+    <string name="category_vegetarian">Vegetariano</string>
+    <string name="category_vegan">Vegano</string>
+    
+    <!-- ==================== ÁREAS POR DEFECTO ==================== -->
+    <string name="area_american">Americana</string>
+    <string name="area_british">Británica</string>
+    <string name="area_chinese">China</string>
+    <string name="area_french">Francesa</string>
+    <string name="area_italian">Italiana</string>
+    <string name="area_mexican">Mexicana</string>
+    <string name="area_spanish">Española</string>
+    
+    <!-- ==================== ACCESIBILIDAD ==================== -->
+    <string name="content_description_recipe_image">Imagen de la receta</string>
+    <string name="content_description_search_button">Botón de búsqueda</string>
+    <string name="content_description_add_button">Agregar a colección</string>
+    <string name="content_description_delete_button">Eliminar receta</string>
+    <string name="content_description_back_button">Volver atrás</string>
+    <string name="content_description_menu_button">Menú</string>
+    
+    <!-- ==================== PULL TO REFRESH ==================== -->
+    <string name="pull_to_refresh">Desliza para actualizar</string>
+    <string name="refreshing">Actualizando...</string>
 </resources>
