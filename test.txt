@@ -1,0 +1,24 @@
+auth 
+
+alta
+baja 
+modificacion de receta 
+
+coleccion de recetas por user
+	
+ultima receta ingresada o modificada
+visualizaciones de comidas por receta. 
+
+
+Vistas 
+
+	login
+	resgistro
+
+Recetas 
+	lista de recetas 
+		fotos de recetas + info gral 
+		botonardo agregar a mis recetas 
+	mis recetas 
+		CRUD recetas
+	ultima receta ingresasda o modificada
