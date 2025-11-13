@@ -55,6 +55,7 @@ public interface RecipeDao {
      * @return La receta con dateModified más reciente, o null si no hay recetas
      */
     @Query("SELECT * FROM recipes ORDER BY dateModified DESC LIMIT 1")
+
     Recipe getLastModifiedRecipe();
     
     /**

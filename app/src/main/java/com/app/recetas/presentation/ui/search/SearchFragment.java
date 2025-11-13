@@ -21,11 +21,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.app.recetas.data.remote.dto.MealDto;
 import com.app.recetas.presentation.ui.detail.RecipeDetailActivity;
 import com.app.recetas.presentation.ui.search.adapter.SearchResultAdapter;
 import com.app.recetas.presentation.viewmodel.SearchViewModel;
 import com.app.recetas.utils.SearchType;
+import com.app.recetas.utils.PreferencesManager;
+
+
 
 /**
  * Fragment para búsqueda de recetas en TheMealDB API
@@ -167,18 +171,55 @@ public class SearchFragment extends Fragment {
     /**
      * Configura el RecyclerView con su adapter
      */
-    private void setupRecyclerView() {
+    /**
+     * Configura el RecyclerView con su adapter
+     */
+   /* private void setupRecyclerView() {
         adapter = new SearchResultAdapter(
-            // Callback para agregar a colección
-            meal -> searchViewModel.addToCollection(meal),
-            // Callback para ver detalle de receta
-            meal -> openRecipeDetail(meal)
+                // Callback para "Agregar a colección"
+                meal -> {
+                    // 1) Insertar en Room (como ya lo hacías)
+                    searchViewModel.addToCollection(meal);
+
+                    // 2) Guardar como "última receta ingresada/modificada" (Punto F)
+                    //    Ajustá los nombres si tu DTO difiere (en tu caso son públicos idMeal / strMeal).
+                    new PreferencesManager(requireContext())
+                            .saveLastRecipe(meal.idMeal, meal.strMeal);
+                },
+
+                // Callback para ver detalle de receta
+                meal -> openRecipeDetail(meal)
         );
-        
+
         recyclerViewResults.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewResults.setAdapter(adapter);
     }
-    
+*/
+    /**
+     * Configura el RecyclerView con su adapter
+     */
+    private void setupRecyclerView() {
+        adapter = new SearchResultAdapter(
+                // Callback para "Agregar a colección"
+                meal -> {
+                    // 1) Insertar en Room
+                    searchViewModel.addToCollection(meal);
+
+                    // 2) Guardar como "última receta" (TU PreferencesManager)
+                    new PreferencesManager(requireContext())
+                            .saveLastRecipe(meal.idMeal, meal.strMeal);
+                },
+                // Callback para ver detalle
+                meal -> openRecipeDetail(meal)
+        );
+
+        recyclerViewResults.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewResults.setAdapter(adapter);
+    }
+
+
+
+
     /**
      * Abre la pantalla de detalle de receta
      */

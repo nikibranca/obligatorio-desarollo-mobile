@@ -69,6 +69,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     public void onBindViewHolder(@NonNull SearchResultViewHolder holder, int position) {
         MealDto meal = meals.get(position);
         holder.bind(meal);
+
     }
     
     @Override
