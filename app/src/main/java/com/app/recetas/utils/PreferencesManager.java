@@ -20,6 +20,11 @@ public class PreferencesManager {
     private static final String KEY_USER_EMAIL = "user_email"; // Email del usuario logueado
     private static final String KEY_FIRST_LAUNCH = "first_launch"; // Si es el primer lanzamiento
     
+    // Claves para manejo de sesión
+    private static final String KEY_USER_LOGGED_IN = "user_logged_in";
+    private static final String KEY_LAST_ACTIVITY_TIME = "last_activity_time";
+    private static final String KEY_SESSION_START_TIME = "session_start_time";
+    
     // Instancia de SharedPreferences
     private SharedPreferences preferences;
     
@@ -132,6 +137,72 @@ public class PreferencesManager {
         return preferences.getBoolean(KEY_FIRST_LAUNCH, true); // Por defecto es true
     }
     
+    // ==================== MANEJO DE SESIÓN ====================
+    
+    /**
+     * Marca al usuario como logueado
+     */
+    public void setUserLoggedIn(boolean loggedIn) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(KEY_USER_LOGGED_IN, loggedIn);
+        if (loggedIn) {
+            editor.putLong(KEY_SESSION_START_TIME, System.currentTimeMillis());
+        } else {
+            editor.remove(KEY_SESSION_START_TIME);
+        }
+        editor.apply();
+    }
+    
+    /**
+     * Verifica si el usuario está logueado
+     */
+    public boolean isUserLoggedIn() {
+        return preferences.getBoolean(KEY_USER_LOGGED_IN, false);
+    }
+    
+    /**
+     * Actualiza el tiempo de última actividad
+     */
+    public void updateLastActivityTime() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(KEY_LAST_ACTIVITY_TIME, System.currentTimeMillis());
+        editor.apply();
+    }
+    
+    /**
+     * Obtiene el tiempo de última actividad
+     */
+    public long getLastActivityTime() {
+        return preferences.getLong(KEY_LAST_ACTIVITY_TIME, 0);
+    }
+    
+    /**
+     * Limpia el tiempo de última actividad
+     */
+    public void clearLastActivityTime() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(KEY_LAST_ACTIVITY_TIME);
+        editor.apply();
+    }
+    
+    /**
+     * Obtiene el tiempo de inicio de sesión
+     */
+    public long getSessionStartTime() {
+        return preferences.getLong(KEY_SESSION_START_TIME, 0);
+    }
+    
+    /**
+     * Calcula la duración de la sesión actual en minutos
+     */
+    public long getSessionDurationMinutes() {
+        long startTime = getSessionStartTime();
+        if (startTime == 0) return 0;
+        
+        long currentTime = System.currentTimeMillis();
+        return (currentTime - startTime) / (60 * 1000); // Convertir a minutos
+    }
+
     // ==================== UTILIDADES ====================
     
     /**

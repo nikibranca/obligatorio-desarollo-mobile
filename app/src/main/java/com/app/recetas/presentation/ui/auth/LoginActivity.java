@@ -12,13 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.app.recetas.data.repository.AuthRepository;
 import com.app.recetas.presentation.ui.MainActivity;
 import com.app.recetas.utils.InputValidator;
+import com.app.recetas.utils.SessionValidator;
+import com.app.recetas.utils.FirebaseConnectionValidator;
 
 /**
- * Activity básica para login con Firebase Auth
+ * Activity para login con Firebase Auth y validaciones completas
  */
 public class LoginActivity extends AppCompatActivity {
     
     private AuthRepository authRepository;
+    private SessionValidator sessionValidator;
     private EditText editEmail, editPassword;
     private Button btnLogin, btnGoToRegister;
     private TextView textStatus;
@@ -30,11 +33,15 @@ public class LoginActivity extends AppCompatActivity {
         // Crear UI programáticamente (simple)
         createSimpleUI();
         
-        // Inicializar repositorio
+        // Inicializar dependencias
         authRepository = new AuthRepository();
+        sessionValidator = new SessionValidator(this);
         
         // Configurar listeners
         setupClickListeners();
+        
+        // Verificar conexión inicial
+        checkFirebaseConnection();
     }
     
     private void createSimpleUI() {
@@ -84,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         
         // Status
         textStatus = new TextView(this);
-        textStatus.setText("Ingresa tus credenciales");
+        textStatus.setText("Verificando conexión...");
         textStatus.setPadding(0, 30, 0, 0);
         layout.addView(textStatus);
         
@@ -94,6 +101,26 @@ public class LoginActivity extends AppCompatActivity {
     private void setupClickListeners() {
         btnLogin.setOnClickListener(v -> performLogin());
         btnGoToRegister.setOnClickListener(v -> goToRegister());
+    }
+    
+    /**
+     * Verifica la conexión con Firebase antes de permitir login
+     */
+    private void checkFirebaseConnection() {
+        FirebaseConnectionValidator.validateFirebaseConnection(this, new FirebaseConnectionValidator.FirebaseConnectionCallback() {
+            @Override
+            public void onConnectionResult(boolean isConnected, String message) {
+                if (isConnected) {
+                    textStatus.setText("✅ Conexión establecida. Ingresa tus credenciales");
+                    btnLogin.setEnabled(true);
+                    btnGoToRegister.setEnabled(true);
+                } else {
+                    textStatus.setText("❌ " + message + ". Verifica tu conexión");
+                    btnLogin.setEnabled(false);
+                    btnGoToRegister.setEnabled(false);
+                }
+            }
+        });
     }
     
     private void performLogin() {
@@ -116,31 +143,54 @@ public class LoginActivity extends AppCompatActivity {
         // Mostrar loading
         textStatus.setText("🔄 Iniciando sesión...");
         btnLogin.setEnabled(false);
+        btnGoToRegister.setEnabled(false);
         
         // Realizar login
         authRepository.login(email, password, task -> {
             btnLogin.setEnabled(true);
+            btnGoToRegister.setEnabled(true);
             
             if (task.isSuccessful()) {
                 // Login exitoso
                 textStatus.setText("✅ ¡Bienvenido!");
+                
+                // DEBUG: Verificar estado de Firebase
+                authRepository.debugFirebaseState();
+                
+                // Iniciar sesión en SessionValidator
+                sessionValidator.startSession(email);
+                
                 Toast.makeText(this, "Login exitoso", Toast.LENGTH_SHORT).show();
                 
                 // Ir a MainActivity
-                startActivity(new Intent(this, MainActivity.class));
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
                 finish();
                 
             } else {
                 // Error en login
-                String error = task.getException() != null ? 
-                    task.getException().getMessage() : "Error desconocido";
-                textStatus.setText("❌ Error: " + error);
-                Toast.makeText(this, "Error de login", Toast.LENGTH_SHORT).show();
+                String error = authRepository.getErrorMessage(task.getException());
+                textStatus.setText("❌ " + error);
+                Toast.makeText(this, "Error de login: " + error, Toast.LENGTH_LONG).show();
             }
         });
     }
     
     private void goToRegister() {
         startActivity(new Intent(this, RegisterActivity.class));
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Verificar si ya hay una sesión válida
+        if (sessionValidator.validateCurrentSession().isValid()) {
+            // Ya hay sesión válida, ir a MainActivity
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 }
