@@ -17,16 +17,13 @@ import com.app.recetas.presentation.ui.search.SearchFragment;
 import com.app.recetas.presentation.ui.collection.MyRecipesFragment; // <-- si creaste el fragment nuevo
 import com.app.recetas.presentation.viewmodel.HomeViewModel;
 import com.app.recetas.utils.PreferencesManager;
+import com.app.recetas.utils.SessionValidator;
 
-
-
-/**
- * MainActivity principal con navegación entre fragments
- */
 public class MainActivity extends AppCompatActivity {
 
     private HomeViewModel homeViewModel;
     private AuthRepository authRepository;
+    private SessionValidator sessionValidator;
     private TextView textInfo;
     private Button btnLogout, btnSearch, btnMyRecipes;
 
@@ -36,39 +33,21 @@ public class MainActivity extends AppCompatActivity {
     // ID del contenedor para los fragments (evitamos depender de R.id.*)
     private int containerId;
 
-   /* @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Crear layout con navegación
-        createMainUI();
-
-        // Inicializar dependencias
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        authRepository = new AuthRepository();
-
-        // Configurar listeners
-        setupClickListeners();
-
-        // Observar datos
-        observeData();
-
-        // Mostrar información del usuario
-        showUserInfo();
-
-        // Mostrar fragment de búsqueda por defecto
-        showSearchFragment();
-        showLastRecipeBannerIfAny();
-    }
-*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Inicializar dependencias
+        authRepository = new AuthRepository();
+        sessionValidator = new SessionValidator(this);
+        
+        // Validar sesión antes de continuar
+        if (!sessionValidator.validateSessionOrRedirect(this)) {
+            return; // Si la sesión no es válida, ya se redirigió a login
+        }
+
         createMainUI();
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        authRepository = new AuthRepository();
         setupClickListeners();
         observeData();
 
@@ -76,6 +55,21 @@ public class MainActivity extends AppCompatActivity {
         refreshHeader();
 
         showSearchFragment();
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Actualizar actividad del usuario
+        sessionValidator.updateUserActivity();
+        
+        // Validar sesión en cada resume
+        if (!sessionValidator.validateSessionOrRedirect(this)) {
+            return;
+        }
+        
+        // Refrescar header con información actualizada
+        refreshHeader();
     }
 
     private void createMainUI() {
@@ -146,23 +140,6 @@ public class MainActivity extends AppCompatActivity {
         btnMyRecipes.setOnClickListener(v -> showMyRecipesInfo());
     }
 
-   /* private void observeData() {
-        // Observar recetas para mostrar estadísticas
-        homeViewModel.getRecipes().observe(this, recipes -> {
-            updateInfoDisplay(recipes != null ? recipes.size() : 0);
-        });
-
-        // Observar información de última receta
-        homeViewModel.getLastRecipeInfo().observe(this, lastRecipeInfo -> {
-            if (lastRecipeInfo != null && !lastRecipeInfo.isEmpty()) {
-                String currentText = textInfo.getText().toString();
-                if (!currentText.contains("📝")) {
-                    textInfo.setText(currentText + "\n📝 " + lastRecipeInfo);
-                }
-            }
-        });
-    }
-*/
    private void observeData() {
        homeViewModel.getRecipes().observe(this, recipes -> {
            // Antes: updateInfoDisplay(...)
@@ -177,48 +154,17 @@ public class MainActivity extends AppCompatActivity {
        });
    }
 
-    private void showUserInfo() {
-        String userEmail = authRepository.getCurrentUserEmail();
-        String userInfo = "👤 " + (userEmail != null ? userEmail : "Usuario de prueba");
-        textInfo.setText(userInfo);
-    }
-
-    private void showLastRecipeBannerIfAny() {
-        PreferencesManager pm = new PreferencesManager(this);
-        String[] last = pm.getLastRecipe(); // [id, name, timestamp] o null
-        if (last != null && last.length == 3) {
-            String lastName = last[1];
-            long ts = 0L;
-            try { ts = Long.parseLong(last[2]); } catch (Exception ignored) {}
-            String when = (ts > 0)
-                    ? android.text.format.DateFormat.format("dd/MM HH:mm", new java.util.Date(ts)).toString()
-                    : "";
-
-            String base = textInfo.getText().toString();
-            String banner = "\n📝 Última receta agregada/modificada: " + lastName +
-                    (when.isEmpty() ? "" : " (" + when + ")");
-
-            if (!base.contains("Última receta agregada/modificada")) {
-                textInfo.setText(base + banner);
-            }
-        }
-    }
-
-
-    private void updateInfoDisplay(int recipeCount) {
-        String userEmail = authRepository.getCurrentUserEmail();
-
-        String info = "👤 " + (userEmail != null ? userEmail : "Usuario de prueba") + "\n" +
-                "📊 Recetas guardadas: " + recipeCount;
-
-        textInfo.setText(info);
-    }
-
     // Construye SIEMPRE el encabezado completo (usuario, cantidad y última receta)
     private void refreshHeader() {
         // 1) Usuario
         String userEmail = authRepository.getCurrentUserEmail();
         String header = "👤 " + (userEmail != null ? userEmail : "Usuario de prueba");
+        
+        // Agregar información de sesión
+        long sessionDuration = new PreferencesManager(this).getSessionDurationMinutes();
+        if (sessionDuration > 0) {
+            header += " (Sesión: " + sessionDuration + " min)";
+        }
 
         // 2) Cantidad de recetas guardadas (viene del LiveData del ViewModel)
         int count = 0;
@@ -244,11 +190,13 @@ public class MainActivity extends AppCompatActivity {
         textInfo.setText(header);
     }
 
-
     /**
      * Muestra el fragment de búsqueda
      */
     private void showSearchFragment() {
+        // Actualizar actividad del usuario
+        sessionValidator.updateUserActivity();
+        
         SearchFragment searchFragment = new SearchFragment();
 
         getSupportFragmentManager()
@@ -267,6 +215,9 @@ public class MainActivity extends AppCompatActivity {
      * Muestra información de recetas guardadas (y el fragment real)
      */
     private void showMyRecipesInfo() {
+        // Actualizar actividad del usuario
+        sessionValidator.updateUserActivity();
+        
         // (Podés dejar el layout informativo si querés, pero lo ideal es mostrar tu fragment)
         getSupportFragmentManager()
                 .beginTransaction()
@@ -281,8 +232,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void performLogout() {
-        // Cerrar sesión
-        authRepository.logout();
+        // Cerrar sesión usando SessionValidator
+        sessionValidator.endSession();
 
         // Ir a LoginActivity
         Intent intent = new Intent(this, LoginActivity.class);
@@ -290,7 +241,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-
-
 }
