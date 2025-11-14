@@ -20,6 +20,7 @@ import java.util.List;
 public class SavedRecipesAdapter extends RecyclerView.Adapter<SavedRecipesAdapter.VH> {
 
     public interface OnRecipeAction {
+        void onOpen(Recipe r);       // <-- NUEVO: abrir detalle
         void onEditNotes(Recipe r);
         void onDelete(Recipe r);
     }
@@ -78,6 +79,10 @@ public class SavedRecipesAdapter extends RecyclerView.Adapter<SavedRecipesAdapte
         btns.setOrientation(LinearLayout.VERTICAL);
         root.addView(btns);
 
+        Button btnOpen = new Button(ctx);
+        btnOpen.setText("Ver");              // <-- NUEVO
+        btns.addView(btnOpen);
+
         Button btnNotes = new Button(ctx);
         btnNotes.setText("Notas");
         btns.addView(btnNotes);
@@ -86,7 +91,7 @@ public class SavedRecipesAdapter extends RecyclerView.Adapter<SavedRecipesAdapte
         btnDelete.setText("Eliminar");
         btns.addView(btnDelete);
 
-        return new VH(root, img, title, meta, notes, btnNotes, btnDelete);
+        return new VH(root, img, title, meta, notes, btnOpen, btnNotes, btnDelete);
     }
 
     @Override
@@ -103,13 +108,16 @@ public class SavedRecipesAdapter extends RecyclerView.Adapter<SavedRecipesAdapte
         String n = r.getPersonalNotes();
         h.notes.setText(n != null && !n.isEmpty() ? "📝 " + n : "");
 
-        // Mostrar imagen si querés activar Glide:
+        // Imagen si tenés Glide:
         // if (r.getImageUrl() != null && !r.getImageUrl().isEmpty()) {
         //     Glide.with(h.itemView.getContext()).load(r.getImageUrl()).into(h.img);
         // } else {
         //     h.img.setImageResource(android.R.drawable.ic_menu_report_image);
         // }
 
+        // Clicks
+        h.itemView.setOnClickListener(v -> actions.onOpen(r)); // abrir con tap al item
+        h.btnOpen.setOnClickListener(v -> actions.onOpen(r));  // o con botón "Ver"
         h.btnNotes.setOnClickListener(v -> actions.onEditNotes(r));
         h.btnDelete.setOnClickListener(v -> actions.onDelete(r));
     }
@@ -117,11 +125,12 @@ public class SavedRecipesAdapter extends RecyclerView.Adapter<SavedRecipesAdapte
     @Override public int getItemCount() { return data.size(); }
 
     static class VH extends RecyclerView.ViewHolder {
-        ImageView img; TextView title, meta, notes; Button btnNotes, btnDelete;
-        VH(@NonNull View itemView, ImageView img, TextView title, TextView meta, TextView notes, Button btnNotes, Button btnDelete) {
+        ImageView img; TextView title, meta, notes; Button btnOpen, btnNotes, btnDelete;
+        VH(@NonNull View itemView, ImageView img, TextView title, TextView meta, TextView notes,
+           Button btnOpen, Button btnNotes, Button btnDelete) {
             super(itemView);
             this.img = img; this.title = title; this.meta = meta; this.notes = notes;
-            this.btnNotes = btnNotes; this.btnDelete = btnDelete;
+            this.btnOpen = btnOpen; this.btnNotes = btnNotes; this.btnDelete = btnDelete;
         }
     }
 }
