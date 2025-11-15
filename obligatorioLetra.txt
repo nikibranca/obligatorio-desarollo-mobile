@@ -72,6 +72,9 @@ Se recomienda que toda descarga de información se implemente en un hilo
 trabajador.
 Se recomienda que los textos que se muestran en la aplicación no sean
 hardcodeados. Se puede hacer uso del recurso string.xml.
+
+
+
 Funcionalidades extras (opcionales)
 ●
 ●

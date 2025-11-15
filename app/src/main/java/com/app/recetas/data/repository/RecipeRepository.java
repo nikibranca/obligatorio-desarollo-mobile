@@ -212,6 +212,17 @@ public class RecipeRepository {
     }
     
     /**
+     * Verifica si una receta tiene información completa (ingredientes e instrucciones)
+     * Las búsquedas por categoría/área solo devuelven información básica
+     * @param meal MealDto a verificar
+     * @return true si tiene información completa, false si solo tiene información básica
+     */
+    public boolean hasCompleteInfo(com.app.recetas.data.remote.dto.MealDto meal) {
+        return meal.strInstructions != null && !meal.strInstructions.trim().isEmpty() &&
+               meal.strIngredient1 != null && !meal.strIngredient1.trim().isEmpty();
+    }
+    
+    /**
      * Limpia recursos del repositorio
      * Cierra el executor para evitar memory leaks
      */

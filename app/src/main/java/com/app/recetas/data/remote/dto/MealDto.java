@@ -90,9 +90,9 @@ public class MealDto {
         return new Recipe(
             idMeal != null ? idMeal : "", // ID de la receta
             strMeal != null ? strMeal : "", // Nombre
-            strCategory != null ? strCategory : "", // Categoría
-            strArea != null ? strArea : "", // Área
-            strInstructions != null ? strInstructions : "", // Instrucciones
+            strCategory != null ? strCategory : "Sin categoría", // Categoría
+            strArea != null ? strArea : "Sin área", // Área
+            strInstructions != null ? strInstructions : "Instrucciones no disponibles. Busca por nombre para obtener detalles completos.", // Instrucciones
             strMealThumb != null ? strMealThumb : "", // URL imagen
             buildIngredientsJson() // Ingredientes en formato JSON
         );
@@ -122,6 +122,28 @@ public class MealDto {
             strMeasure11, strMeasure12, strMeasure13, strMeasure14, strMeasure15,
             strMeasure16, strMeasure17, strMeasure18, strMeasure19, strMeasure20
         };
+        
+        // Verificar si todos los ingredientes son nulos (búsqueda por categoría/área)
+        boolean hasAnyIngredient = false;
+        for (String ingredient : ingredients) {
+            if (ingredient != null && !ingredient.trim().isEmpty()) {
+                hasAnyIngredient = true;
+                break;
+            }
+        }
+        
+        // Si no hay ingredientes, agregar mensaje informativo
+        if (!hasAnyIngredient) {
+            try {
+                JSONObject infoObj = new JSONObject();
+                infoObj.put("ingredient", "Ingredientes no disponibles");
+                infoObj.put("measure", "Busca por nombre para obtener la lista completa de ingredientes");
+                ingredientsArray.put(infoObj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return ingredientsArray.toString();
+        }
         
         // Procesar cada ingrediente y su medida correspondiente
         for (int i = 0; i < ingredients.length; i++) {
