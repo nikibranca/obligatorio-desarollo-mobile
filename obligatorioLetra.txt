@@ -29,6 +29,8 @@ plantea a continuación. Todos los integrantes del grupo deben participar.
 Planteo del problema
 Realizar una aplicación nativa para el sistema operativo Android utilizando Android
 Studio, con el propósito de organizar y gestionar la colección de recetas del usuario.
+
+
 Los requerimientos para esta aplicación son los siguientes:
 ●
 Realizar el registro y autenticación de los usuarios por medio de un servicio (ej,
@@ -61,8 +63,8 @@ Consideraciones Generales
 ●
 ●
 El mecanismo de autenticación recomendado es Firebase Authentication.
-Para los datos de las recetas que sea necesario almacenar en el dispositivo se
-recomienda el uso de una BD SQLite.
+
+Para los datos de las recetas que sea necesario almacenar en el dispositivo se recomienda el uso de una BD SQLite.
 Se tomará en cuenta el diseño de la interfaz de acuerdo a la letra del problema.
 Se deberá validar el formato de los datos de entrada y datos vacíos.
 Las búsquedas en el repositorio se podrán realizar por nombre, categoría o área.
@@ -70,8 +72,7 @@ Las categorías y áreas se deberán desplegar utilizando un spinner. Ejemplo de
 categorías: Entrada, postre.
 Se recomienda que toda descarga de información se implemente en un hilo
 trabajador.
-Se recomienda que los textos que se muestran en la aplicación no sean
-hardcodeados. Se puede hacer uso del recurso string.xml.
+Se recomienda que los textos que se muestran en la aplicación no sean hardcodeados. Se puede hacer uso del recurso string.xml.
 
 
 
