@@ -120,6 +120,14 @@ public class SearchViewModel extends AndroidViewModel {
         return error;
     }
     
+    /**
+     * Obtiene el repositorio (para verificaciones internas)
+     * @return RecipeRepository
+     */
+    public RecipeRepository getRepository() {
+        return repository;
+    }
+    
     // ==================== OPERACIONES DE BÚSQUEDA ====================
     
     /**
@@ -166,9 +174,15 @@ public class SearchViewModel extends AndroidViewModel {
                     MealResponse mealResponse = response.body();
                     
                     if (mealResponse.hasResults()) {
-                        // Búsqueda exitosa con resultados
-                        searchResults.setValue(mealResponse.meals);
-                        message.setValue("Se encontraron " + mealResponse.getResultCount() + " recetas");
+                        // Verificar si necesitamos obtener detalles completos
+                        if (searchType == SearchType.CATEGORY || searchType == SearchType.AREA) {
+                            // Para búsquedas por categoría/área, obtener detalles completos
+                            fetchCompleteRecipeDetails(mealResponse.meals);
+                        } else {
+                            // Para búsqueda por nombre, usar directamente
+                            searchResults.setValue(mealResponse.meals);
+                            message.setValue("Se encontraron " + mealResponse.getResultCount() + " recetas");
+                        }
                     } else {
                         // Búsqueda exitosa pero sin resultados
                         searchResults.setValue(new ArrayList<>());
@@ -221,6 +235,65 @@ public class SearchViewModel extends AndroidViewModel {
         });
     }
     
+    /**
+     * Obtiene los detalles completos para una lista de recetas básicas
+     * @param basicRecipes Lista de recetas con información básica
+     */
+    private void fetchCompleteRecipeDetails(List<MealDto> basicRecipes) {
+        if (basicRecipes == null || basicRecipes.isEmpty()) {
+            searchResults.setValue(new ArrayList<>());
+            return;
+        }
+        
+        List<MealDto> completeRecipes = new ArrayList<>();
+        final int totalRecipes = Math.min(basicRecipes.size(), 10); // Limitar a 10 para no sobrecargar
+        
+        // Contador para saber cuándo terminamos todas las llamadas
+        final int[] completedCalls = {0};
+        
+        for (int i = 0; i < totalRecipes; i++) {
+            MealDto basicRecipe = basicRecipes.get(i);
+            
+            repository.getRecipeById(basicRecipe.idMeal).enqueue(new Callback<MealResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<MealResponse> call, @NonNull Response<MealResponse> response) {
+                    synchronized (completeRecipes) {
+                        if (response.isSuccessful() && response.body() != null && response.body().hasResults()) {
+                            completeRecipes.add(response.body().meals.get(0));
+                        } else {
+                            // Si falla obtener detalles, usar la receta básica
+                            completeRecipes.add(basicRecipe);
+                        }
+                        
+                        completedCalls[0]++;
+                        
+                        // Cuando terminemos todas las llamadas, actualizar UI
+                        if (completedCalls[0] == totalRecipes) {
+                            isLoading.setValue(false);
+                            searchResults.setValue(completeRecipes);
+                            message.setValue("Se encontraron " + completeRecipes.size() + " recetas con detalles completos");
+                        }
+                    }
+                }
+                
+                @Override
+                public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) {
+                    synchronized (completeRecipes) {
+                        // Si falla, usar la receta básica
+                        completeRecipes.add(basicRecipe);
+                        completedCalls[0]++;
+                        
+                        if (completedCalls[0] == totalRecipes) {
+                            isLoading.setValue(false);
+                            searchResults.setValue(completeRecipes);
+                            message.setValue("Se encontraron " + completeRecipes.size() + " recetas");
+                        }
+                    }
+                }
+            });
+        }
+    }
+    
     // ==================== GESTIÓN DE COLECCIÓN ====================
     
     /**
@@ -236,6 +309,42 @@ public class SearchViewModel extends AndroidViewModel {
         // Mostrar loading
         isLoading.setValue(true);
         
+        // Las recetas ya vienen completas desde la búsqueda
+        addRecipeToCollection(mealDto);
+    }
+    
+    /**
+     * Obtiene los detalles completos de una receta por ID y la agrega a la colección
+     * @param recipeId ID de la receta
+     * @param recipeName Nombre de la receta (para mostrar en mensajes)
+     */
+    private void getCompleteRecipeAndAdd(String recipeId, String recipeName) {
+        repository.getRecipeById(recipeId).enqueue(new Callback<MealResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MealResponse> call, @NonNull Response<MealResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().hasResults()) {
+                    // Obtener la receta completa
+                    MealDto completeRecipe = response.body().meals.get(0);
+                    addRecipeToCollection(completeRecipe);
+                } else {
+                    isLoading.setValue(false);
+                    error.setValue("No se pudieron obtener los detalles completos de la receta");
+                }
+            }
+            
+            @Override
+            public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) {
+                isLoading.setValue(false);
+                error.setValue("Error obteniendo detalles de la receta: " + t.getMessage());
+            }
+        });
+    }
+    
+    /**
+     * Agrega una receta completa a la colección
+     * @param mealDto Receta con información completa
+     */
+    private void addRecipeToCollection(MealDto mealDto) {
         // Ejecutar en hilo separado para no bloquear UI
         new Thread(() -> {
             try {

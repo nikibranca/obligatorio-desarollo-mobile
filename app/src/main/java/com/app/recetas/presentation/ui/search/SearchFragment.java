@@ -338,7 +338,7 @@ public class SearchFragment extends Fragment {
                 if (results.isEmpty()) {
                     textStatus.setText("No se encontraron recetas. Prueba con otro término.");
                 } else {
-                    textStatus.setText("✅ " + results.size() + " recetas encontradas. Haz clic para ver detalles.");
+                    textStatus.setText("✅ " + results.size() + " recetas encontradas con detalles completos.");
                 }
             }
         });
