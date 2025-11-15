@@ -26,7 +26,12 @@
             android:name=".presentation.ui.auth.LoginActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-        
+
+        <activity
+            android:name=".presentation.ui.newrecipe.NewRecipeActivity"
+            android:exported="false" />
+
+
         <!-- Actividad de registro -->
         <activity
             android:name=".presentation.ui.auth.RegisterActivity"
@@ -53,6 +58,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
 
     </application>
 

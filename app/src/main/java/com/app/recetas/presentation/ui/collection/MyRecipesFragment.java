@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.app.recetas.data.local.entities.Recipe;
 import com.app.recetas.presentation.viewmodel.HomeViewModel;
 import com.app.recetas.presentation.ui.detail.RecipeDetailActivity;
 import com.app.recetas.utils.PreferencesManager;
+import com.app.recetas.presentation.ui.newrecipe.NewRecipeActivity;
 
 public class MyRecipesFragment extends Fragment {
 
@@ -49,6 +51,24 @@ public class MyRecipesFragment extends Fragment {
         title.setText("📋 Mis Recetas Guardadas");
         title.setTextSize(22f);
         root.addView(title);
+
+        Button btnNewRecipe = new Button(requireContext());
+        btnNewRecipe.setText("➕ Nueva receta");
+        btnNewRecipe.setAllCaps(false);
+
+        LinearLayout.LayoutParams newRecipeParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        newRecipeParams.setMargins(0, dpToPx(8), 0, dpToPx(8));
+        btnNewRecipe.setLayoutParams(newRecipeParams);
+
+        root.addView(btnNewRecipe); // donde rootLayout es tu LinearLayout principal
+
+        btnNewRecipe.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), NewRecipeActivity.class);
+            startActivity(intent);
+        });
 
         emptyView = new TextView(requireContext());
         emptyView.setText("No tenés recetas todavía.\nUsá 'Buscar' para agregarlas.");
@@ -133,5 +153,11 @@ public class MyRecipesFragment extends Fragment {
         intent.putExtra(RecipeDetailActivity.EXTRA_MEAL_INGREDIENTS, r.getIngredients());
 
         startActivity(intent);
+    }
+
+
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return (int) (dp * density);
     }
 }
